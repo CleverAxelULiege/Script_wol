@@ -31,13 +31,10 @@ function Send-WakeOnLan {
     Write-Host $Broadcast
 }
 
-$Broadcast = "192.168.0.255"
+$Broadcast = "10.34.1.255"
 
 $MacAddresses = @(
-    'Mac address 1',
-    'Mac address 2',
-    'Mac address 3',
-    'Mac address 4'
+    "30-5A-3A-55-F8-3B"
 )
 
 # Send-WakeOnLan -MacAddress "30-5A-3A-55-FA-E6" -Broadcast $broadcast
