@@ -25,9 +25,15 @@ function Send-WakeOnLan {
     Write-Host "Magic packet sent to $MacAddress via $Broadcast"
 }
 
+# $Broadcast = "192.168.0.255"
 $Broadcast = "192.168.0.255"
 $Machines = @(
-    @{ MacAddress = "30-5A-3A-55-FA-E6"; Name = "Piaget 1" }
+    @{ MacAddress = "30-5A-3A-55-FA-E6"; Name = "Piaget 1" },
+    @{ MacAddress = "30:5a:3a:55:f8:3b"; Name = "Piaget 2" },
+    @{ MacAddress = "30:5a:3a:56:00:9b"; Name = "Piaget 3" },
+    @{ MacAddress = "30:5a:3a:55:fb:15"; Name = "Piaget 4" },
+    @{ MacAddress = "30:5a:3a:55:fc:27"; Name = "Piaget 5" },
+    @{ MacAddress = "30:5a:3a:55:fb:a7"; Name = "Piaget 6" }
 )
 
 Write-Host "Sending Wake-on-LAN packets..." -ForegroundColor Yellow
