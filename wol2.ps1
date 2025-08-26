@@ -30,14 +30,6 @@ $Machines = @(
     @{ MacAddress = "30-5A-3A-55-FA-E6"; Name = "Piaget 1" }
 )
 
-Write-Host "Clearing ARP table..." -ForegroundColor Yellow
-try {
-    netsh interface ip delete arpcache | Out-Null
-    Write-Host "ARP table cleared successfully" -ForegroundColor Green
-} catch {
-    Write-Host "Warning: Could not clear ARP table - $($_.Exception.Message)" -ForegroundColor Yellow
-}
-
 Write-Host "Sending Wake-on-LAN packets..." -ForegroundColor Yellow
 $Machines | ForEach-Object {
     Write-Host "Waking up $($_.Name) ($($_.MacAddress))..." -ForegroundColor Cyan
@@ -58,13 +50,13 @@ while ($true) {
     if ($ElapsedTime.TotalSeconds -ge $TimeoutSeconds) {
         Write-Host "`n`nTimeout reached (300 seconds)!" -ForegroundColor Red
         
-        $UnbootedMachines = $Machines | Where-Object { $_.MacAddress -notin $BootedMachines }
-        if ($UnbootedMachines.Count -gt 0) {
-            Write-Host "The following machines did not boot:" -ForegroundColor Red
-            $UnbootedMachines | ForEach-Object {
-                Write-Host "$($_.Name) ($($_.MacAddress))" -ForegroundColor Red
-            }
-        }
+        # $UnbootedMachines = $Machines | Where-Object { $_.MacAddress -notin $BootedMachines }
+        # if ($UnbootedMachines.Count -gt 0) {
+        #     Write-Host "The following machines did not boot:" -ForegroundColor Red
+        #     $UnbootedMachines | ForEach-Object {
+        #         Write-Host "$($_.Name) ($($_.MacAddress))" -ForegroundColor Red
+        #     }
+        # }
         break
     }
 
@@ -81,22 +73,10 @@ while ($true) {
         }
     }
     
-    $neighbors = Get-NetNeighbor -AddressFamily IPv4 -ErrorAction SilentlyContinue
     
     foreach ($machine in $Machines) {
         if ($machine.MacAddress -in $BootedMachines) {
             continue
-        }
-        
-        $cleanMac = $machine.MacAddress -replace "[:\-\.]", ""
-        
-        $foundNeighbor = $neighbors | Where-Object { 
-            ($_.LinkLayerAddress -replace "[:\-\.]", "") -eq $cleanMac 
-        }
-        
-        if ($foundNeighbor) {
-            Write-Host "$($machine.Name) is now online! IP: $($foundNeighbor.IPAddress)" -ForegroundColor Green
-            $BootedMachines += $machine.MacAddress
         }
     }
     
